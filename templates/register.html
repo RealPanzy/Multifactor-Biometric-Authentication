@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Register</title>
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+background:#f4f6f9;
+}
+
+video{
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+button{
+padding:10px 20px;
+font-size:16px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Register Face</h2>
+
+<input id="username" placeholder="Username"><br><br>
+
+<input id="password" type="password" placeholder="Password"><br><br>
+
+<video id="video" width="400" height="300" autoplay></video>
+
+<canvas id="canvas" width="400" height="300" style="display:none"></canvas>
+
+<br><br>
+
+<button onclick="registerUser()">Register</button>
+
+<p id="status"></p>
+
+<script>
+
+const video = document.getElementById("video")
+const canvas = document.getElementById("canvas")
+const status = document.getElementById("status")
+
+navigator.mediaDevices.getUserMedia({video:true})
+.then(stream=>{
+video.srcObject = stream
+})
+
+async function registerUser(){
+
+const username = document.getElementById("username").value
+const password = document.getElementById("password").value
+
+if(!username || !password){
+status.innerText = "Enter username and password"
+return
+}
+
+const ctx = canvas.getContext("2d")
+
+ctx.drawImage(video,0,0,400,300)
+
+const image = canvas.toDataURL("image/jpeg")
+
+status.innerText = "Registering..."
+
+try{
+
+const res = await fetch("/realtime_register",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+username:username,
+password:password,
+image:image
+})
+
+})
+
+const data = await res.json()
+
+status.innerText = data.message || data.status
+
+}catch(e){
+
+status.innerText = "Error connecting to server"
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

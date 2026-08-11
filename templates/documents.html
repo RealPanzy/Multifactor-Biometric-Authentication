@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Documents</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div style="padding: 20px; max-width: 900px; margin: auto;">
+    <h2>Documents Library</h2>
+    <p>Welcome, {{ session['user'] }}.</p>
+    <a href="/portal">Back to portal</a> | <a href="/logout">Logout</a>
+    {% if session['user'] == 'Phase' %} | <a href="/manage_documents">Manage document permissions</a>{% endif %}
+
+    <table border="1" cellpadding="8" cellspacing="0" style="margin-top: 20px; width:100%; border-collapse: collapse;">
+      <thead>
+        <tr><th>Title</th><th>Visibility</th><th>Owner</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+      {% for doc in documents %}
+        <tr>
+          <td>{{ doc.title }}</td>
+          <td>{% if doc.is_public %}Public{% else %}Restricted{% endif %}</td>
+          <td>{{ doc.owner_username }}</td>
+          <td><a href="/document/{{ doc.id }}">Open</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

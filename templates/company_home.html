@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Nexora Systems - Enterprise Identity Security</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+<style>
+
+.navbar {
+  background: #2c3e50;
+  padding: 20px 60px !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.logo {
+  color: white !important;
+  font-size: 22px !important;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.navbar nav a {
+  color: white !important;
+  font-weight: 600 !important;
+  margin-left: 25px !important;
+  transition: color 0.3s !important;
+  position: relative;
+  padding: 8px 0 !important;
+}
+
+.navbar nav a:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.8);
+  transition: width 0.3s;
+}
+
+.navbar nav a:hover:after {
+  width: 100%;
+}
+
+.navbar nav a:hover {
+  color: #bdc3c7 !important;
+}
+
+.nav-btn {
+  background: rgba(255,255,255,0.15) !important;
+  padding: 10px 20px !important;
+  border-radius: 4px !important;
+  transition: background 0.3s !important;
+}
+
+.nav-btn:hover {
+  background: rgba(255,255,255,0.25) !important;
+}
+
+.register {
+  background: #e74c3c !important;
+}
+
+.register:hover {
+  background: #c0392b !important;
+}
+
+.hero {
+  height: 600px !important;
+  background: #34495e !important;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes fadeInHero {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hero:before {
+  display: none;
+}
+
+.hero-text {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+}
+
+.hero h1 {
+  font-size: 48px !important;
+  margin-bottom: 20px !important;
+  font-weight: 700;
+  color: white;
+}
+
+.hero p {
+  font-size: 18px !important;
+  margin-bottom: 30px !important;
+  font-weight: 300;
+  color: #ecf0f1;
+}
+
+.hero button {
+  margin-top: 30px !important;
+  padding: 14px 40px !important;
+  font-size: 16px !important;
+  border-radius: 4px !important;
+  background: #e74c3c !important;
+  border: none !important;
+  color: white !important;
+  cursor: pointer !important;
+  font-weight: bold !important;
+  transition: background 0.3s !important;
+}
+
+.hero button:hover {
+  background: #c0392b !important;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.info-section {
+  padding: 100px 120px !important;
+  text-align: center !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.info-section h2 {
+  font-size: 32px !important;
+  margin-bottom: 30px !important;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.info-section p {
+  font-size: 16px !important;
+  line-height: 1.8 !important;
+  color: #555 !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+}
+
+.gray {
+  background: #ecf0f1 !important;
+}
+
+.cards {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 40px !important;
+  margin-top: 50px !important;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: white !important;
+  padding: 40px !important;
+  width: 280px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  transition: box-shadow 0.3s !important;
+  position: relative !important;
+  overflow: hidden !important;
+  border: 1px solid #ecf0f1 !important;
+}
+
+.card:nth-child(1) { }
+.card:nth-child(2) { }
+.card:nth-child(3) { }
+
+@keyframes scaleInCard {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.card:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #e74c3c;
+}
+
+.card:hover {
+  transform: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  border-color: #34495e !important;
+}
+
+.card h3 {
+  color: #2c3e50 !important;
+  font-size: 20px !important;
+  margin-top: 0 !important;
+  margin-bottom: 15px !important;
+  font-weight: 700;
+  transition: none;
+}
+
+.card:hover h3 {
+  color: #2c3e50;
+  transform: none;
+}
+
+.card p {
+  color: #666 !important;
+  line-height: 1.7 !important;
+  font-size: 15px !important;
+}
+
+footer {
+  background: #2c3e50 !important;
+  color: white !important;
+  text-align: center !important;
+  padding: 40px !important;
+  margin-top: 40px !important;
+  font-weight: 600;
+}
+
+footer p {
+  margin: 0 !important;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="logo">
+NEXORA SYSTEMS
+</div>
+
+<nav>
+
+<a href="#about">About</a>
+<a href="#services">Services</a>
+<a href="#security">Security</a>
+
+{% if session.get("user") %}
+
+<a href="/portal" class="nav-btn">Portal</a>
+<a href="/logout" class="nav-btn register">Logout ({{session.get("user")}})</a>
+
+{% else %}
+
+<a href="/login" class="nav-btn">Login</a>
+<a href="/register" class="nav-btn register">Register</a>
+
+{% endif %}
+
+</nav>
+
+</header>
+
+
+<section class="hero">
+
+<div class="hero-text">
+
+<h1>Enterprise Identity Security</h1>
+
+<p>
+Secure biometric authentication and identity management for enterprises.
+</p>
+
+<button onclick="location.href='/login'">Employee Access</button>
+
+</div>
+
+</section>
+
+
+<section id="about" class="info-section">
+
+<h2>About Us</h2>
+
+<p>
+
+Established as a security authentication provider, we develop
+secure authentication and identity management platforms for enterprises.
+
+Our platform enables organizations to protect access to critical systems
+using biometric verification.
+
+</p>
+
+</section>
+
+
+<section id="services" class="info-section gray">
+
+<h2>Core Solutions</h2>
+
+<div class="cards">
+
+<div class="card">
+
+<h3>Biometric Access Control</h3>
+
+<p>
+Multi-factor authentication with facial recognition and
+device verification.
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>Enterprise Identity Management</h3>
+
+<p>
+Centralized identity management and access
+control across infrastructure.
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>Security Monitoring</h3>
+
+<p>
+Real-time authentication analytics with anomaly
+detection and threat response.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section id="security" class="info-section">
+
+<h2>Security Infrastructure</h2>
+
+<p>
+
+Our platform combines facial recognition, encryption, and distributed
+authentication nodes to deliver secure identity verification.
+
+</p>
+
+</section>
+
+
+<footer>
+
+<p>© 2026 Nexora Systems | Enterprise Identity Security</p>
+
+</footer>
+
+</body>
+</html>

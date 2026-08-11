@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Nexora Portal - Employee Dashboard</title>
+<link rel="stylesheet" href="/static/css/style.css">
+
+<style>
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  overflow: auto;
+  animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(5px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: white;
+  margin: 5% auto;
+  padding: 30px;
+  border-radius: 8px;
+  width: 85%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #34495e;
+  padding-bottom: 20px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 28px;
+}
+
+.close-btn {
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: color 0.3s;
+  padding: 0 10px;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+  color: #7f8c8d;
+}
+
+.document-content {
+  line-height: 1.9;
+  color: #333;
+  font-size: 15px;
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.document-content h3 {
+  color: #2c3e50;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.document-content h3:first-of-type {
+  margin-top: 0;
+}
+
+.document-content ul {
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.document-content li {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.document-content p {
+  margin-bottom: 15px;
+  color: #666;
+}
+
+.section-title {
+  font-size: 28px;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+footer {
+  background: #2c3e50;
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+  margin-top: 80px;
+}
+
+footer p:first-child {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+footer p:last-child {
+  font-size: 13px;
+  color: #aaa;
+  margin: 0;
+}
+
+.scroll-hint {
+  text-align: center;
+  color: #999;
+  font-size: 12px;
+  margin-top: 10px;
+  animation: float 3s ease-in-out infinite;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- Portal Header -->
+<header class="portal-header">
+
+<div class="portal-logo">NEXORA</div>
+
+<nav class="portal-nav">
+<a href="/documents">Documents</a>
+<a href="#activity">Activity</a>
+{% if session['user'] == 'Phase' %}<a href="/manage_documents">Manage Document Permissions</a>{% endif %}
+</nav>
+
+<div class="user-section">
+<span class="user-name">{{session["user"]}}</span>
+<button class="logout-btn" onclick="location.href='/logout'">Logout</button>
+</div>
+
+</header>
+
+<!-- Portal Content -->
+<div class="portal-container">
+
+<!-- Welcome Section -->
+<div class="portal-welcome">
+<h1>Welcome Back, {{session["user"]}}!</h1>
+<p>Access your employee portal with documents and activity tracking</p>
+</div>
+
+<!-- Documents Section -->
+<section id="documents" style="margin-bottom:60px;">
+
+<h2 class="section-title">Company Documents Library</h2>
+
+<div class="portal-grid">
+
+<div class="portal-card">
+<h3>Employee Handbook 2026</h3>
+<p>Complete guide to company policies, benefits, and employee expectations. Updated for 2026 with new guidelines.</p>
+<a href="#" onclick="openDocument('handbook'); return false;">View Document</a>
+</div>
+
+<div class="portal-card">
+<h3>Security & Compliance</h3>
+<p>Important security protocols and compliance requirements including data protection policies.</p>
+<a href="#" onclick="openDocument('security'); return false;">View Document</a>
+</div>
+
+<div class="portal-card">
+<h3>Benefits & Compensation</h3>
+<p>Detailed information about insurance, retirement plans, and compensation structure.</p>
+<a href="#" onclick="openDocument('benefits'); return false;">View Document</a>
+</div>
+
+<div class="portal-card">
+<h3>Training & Development</h3>
+<p>Available training programs, professional development opportunities, and skill certifications.</p>
+<a href="#" onclick="openDocument('training'); return false;">View Document</a>
+</div>
+
+<div class="portal-card">
+<h3>Code of Conduct</h3>
+<p>Standards of professional behavior, ethical guidelines, and workplace conduct expectations.</p>
+<a href="#" onclick="openDocument('conduct'); return false;">View Document</a>
+</div>
+
+<div class="portal-card">
+<h3>Emergency Procedures</h3>
+<p>Emergency contact protocols, evacuation procedures, and safety guidelines.</p>
+<a href="#" onclick="openDocument('emergency'); return false;">View Document</a>
+</div>
+
+</div>
+
+</section>
+
+<!-- Document Modal -->
+<div id="documentModal" class="modal">
+<div class="modal-content">
+<div class="modal-header">
+<h2 id="docTitle">Document Title</h2>
+<button class="close-btn" onclick="closeDocument()">&times;</button>
+</div>
+<div id="docContent" class="document-content"></div>
+<div class="scroll-hint">↓ Scroll to view more</div>
+</div>
+</div>
+
+<!-- Login Activity Section -->
+<section id="activity" style="margin-top:60px;">
+
+<h2 class="section-title">Your Login Activity</h2>
+
+<table class="activity-table">
+
+<thead>
+<tr>
+<th>Date & Time</th>
+<th>Employee ID</th>
+<th>Status</th>
+<th>Device</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% if logs %}
+
+{% for log in logs %}
+
+<tr>
+
+<td>{{log.timestamp}}</td>
+
+<td><strong>{{log.username}}</strong></td>
+
+<td>
+{% if log.success %}
+<span class="status-success">Success</span>
+{% else %}
+<span class="status-failed">Failed</span>
+{% endif %}
+</td>
+
+<td>Biometric Auth</td>
+
+</tr>
+
+{% endfor %}
+
+{% else %}
+
+<tr>
+<td colspan="4" style="text-align:center;color:#999;">No login activity recorded yet</td>
+</tr>
+
+{% endif %}
+
+</tbody>
+
+</table>
+
+</section>
+
+<!-- Footer -->
+<footer>
+<p>© 2026 Nexora Systems | Enterprise Identity Security</p>
+<p>Secure employee portal | Multi-Factor Biometric Authentication</p>
+</footer>
+
+</div>
+
+<script>
+const documents = {
+  handbook: {
+    title: "📖 Employee Handbook 2026",
+    content: `
+      <h3>Welcome to Nexora Systems</h3>
+      <p>This Employee Handbook is designed to help you understand the policies, procedures, and expectations of working at Nexora Systems. We are committed to creating a positive, inclusive, and productive workplace environment.</p>
+
+      <h3>1. Company Overview</h3>
+      <p>Founded in 2014, Nexora Systems is a leading provider of biometric authentication and identity verification solutions. We serve over 500 enterprise clients across finance, healthcare, government, and technology sectors.</p>
+
+      <h3>2. Employee Classification</h3>
+      <ul>
+        <li><strong>Full-Time Employees:</strong> Regular employment with full benefits package</li>
+        <li><strong>Part-Time Employees:</strong> Working 20+ hours per week with prorated benefits</li>
+        <li><strong>Contract Employees:</strong> Temporary or project-based engagement</li>
+        <li><strong>Interns:</strong> Educational placements with mentorship programs</li>
+      </ul>
+
+      <h3>3. Working Hours & Schedules</h3>
+      <p>Standard working hours are Monday through Friday, 9:00 AM to 5:00 PM. Flexible work arrangements and remote work options are available pending manager approval.</p>
+
+      <h3>4. Remote Work Policy</h3>
+      <p>Eligible employees may work remotely up to 3 days per week. All remote workers must maintain secure connections and follow our data protection protocols.</p>
+
+      <h3>5. Professional Development</h3>
+      <p>Nexora Systems invests in employee growth. We offer tuition reimbursement, professional certifications, conference attendance, and internal training programs.</p>
+
+      <h3>6. Leave & Time Off</h3>
+      <ul>
+        <li><strong>Paid Time Off (PTO):</strong> 20 days per year for full-time employees</li>
+        <li><strong>Sick Leave:</strong> 10 days per year</li>
+        <li><strong>Holidays:</strong> 10 company holidays annually</li>
+        <li><strong>Parental Leave:</strong> 12 weeks paid (per policy)</li>
+      </ul>
+
+      <h3>7. Dress Code</h3>
+      <p>Business casual is our standard dress code. Comfortable, clean, and professional attire is expected. Specific events may require business formal clothing.</p>
+
+      <h3>8. Performance Reviews</h3>
+      <p>Annual performance reviews are conducted each Q1. Employees receive feedback on productivity, collaboration, and professional development goals.</p>
+
+      <p style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #667eea; color: #888; font-size: 12px;">📅 Last Updated: January 2026 | Version 4.2 | 🔐 Document Classification: Internal Use Only</p>
+    `
+  },
+  security: {
+    title: "🔒 Security & Compliance Policy",
+    content: `
+      <h3>Information Security & Compliance Requirements</h3>
+      <p>All employees must comply with Nexora Systems' security policies to protect company and client data, safeguard intellectual property, and maintain regulatory compliance.</p>
+
+      <h3>1. Password Policy</h3>
+      <ul>
+        <li>Passwords must be minimum 12 characters</li>
+        <li>Include uppercase, lowercase, numbers, and special characters</li>
+        <li>Change passwords every 90 days</li>
+        <li>Never share passwords with colleagues or vendors</li>
+        <li>Use multi-factor authentication (MFA) for all systems</li>
+      </ul>
+
+      <h3>2. Data Protection</h3>
+      <p>All company and client data must be encrypted both in transit and at rest. Unauthorized access or disclosure of confidential information will result in disciplinary action.</p>
+
+      <h3>3. Biometric Authentication</h3>
+      <p>Our Multi-Factor Biometric Authentication System uses facial recognition and passwords. All employees must complete biometric enrollment and maintain their facial profiles up to date.</p>
+
+      <h3>4. Device Security</h3>
+      <ul>
+        <li>Company-issued devices must be encrypted</li>
+        <li>Screen locks required after 5 minutes of inactivity</li>
+        <li>No installation of unauthorized software</li>
+        <li>Report lost or stolen devices immediately</li>
+        <li>Regular security patches must be installed</li>
+      </ul>
+
+      <h3>5. Network Security</h3>
+      <ul>
+        <li>Only connect to official company WiFi</li>
+        <li>Use company VPN for remote work</li>
+        <li>Disable file sharing on personal devices</li>
+        <li>Do not use public WiFi for company work</li>
+      </ul>
+
+      <h3>6. Email Security</h3>
+      <p>Be cautious of phishing attempts. Never click suspicious links or download unexpected attachments. Report phishing emails to IT@nexora.com immediately.</p>
+
+      <h3>7. Incident Reporting</h3>
+      <p>Report all security incidents, suspected data breaches, or policy violations to the Security Team immediately. Failure to report incidents may result in disciplinary action.</p>
+
+      <p style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #667eea; color: #888; font-size: 12px;">🔐 Standards: ISO 27001, GDPR, HIPAA | Classification: Confidential | Last Updated: March 2026</p>
+    `
+  },
+  benefits: {
+    title: "💰 Benefits & Compensation Guide",
+    content: `
+      <h3>Comprehensive Benefits Package</h3>
+      <p>Nexora Systems offers competitive benefits to attract and retain top talent. This guide details all benefits available to eligible employees.</p>
+
+      <h3>1. Health Insurance</h3>
+      <ul>
+        <li><strong>Medical:</strong> Multiple plan options with company contribution of 80%</li>
+        <li><strong>Dental:</strong> Preventive and restorative coverage (100/80/50 model)</li>
+        <li><strong>Vision:</strong> Coverage includes annual eye exams and frames/lenses</li>
+        <li><strong>Effective Date:</strong> First of the month following 30-day waiting period</li>
+      </ul>
+
+      <h3>2. Retirement Plans</h3>
+      <ul>
+        <li><strong>401(k) Plan:</strong> Company matches 4% of contributions (up to 6% contribution limit)</li>
+        <li><strong>Vesting Schedule:</strong> 25% vesting per year (4-year cliff)</li>
+        <li><strong>Investment Options:</strong> 15 fund choices with target-date funds</li>
+        <li><strong>Roth 401(k):</strong> Available for eligible employees</li>
+      </ul>
+
+      <h3>3. Stock Options</h3>
+      <p>Full-time employees are eligible for stock option grants based on role and performance. Options vest over a 4-year period with 1-year cliff vesting.</p>
+
+      <h3>4. Wellness Programs</h3>
+      <ul>
+        <li>Annual health screenings and biometric assessments</li>
+        <li>Gym membership discounts (50% off)</li>
+        <li>Mental health counseling (EAP - 6 sessions annual)</li>
+        <li>Meditation and wellness classes (free)</li>
+        <li>Healthy snacks and hydration stations (complimentary)</li>
+      </ul>
+
+      <h3>5. Professional Development Budget</h3>
+      <p>Each employee receives <strong>$2,000 annually</strong> for professional development, training, certifications, or conference attendance.</p>
+
+      <h3>6. Compensation Review</h3>
+      <p>Salaries are reviewed annually based on market data, performance, and experience. Merit-based raises and bonuses are determined by department performance.</p>
+
+      <p style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #667eea; color: #888; font-size: 12px;">💼 Administrator: MyBenefits Portal | Effective: 2026 Plan Year | Updated: February 2026</p>
+    `
+  },
+  training: {
+    title: "🎓 Training & Development Resources",
+    content: `
+      <h3>Professional Development at Nexora Systems</h3>
+      <p>We invest in your growth. Access training programs, certifications, and learning opportunities to advance your career and enhance your skills.</p>
+
+      <h3>1. Online Learning Platforms</h3>
+      <ul>
+        <li><strong>LinkedIn Learning:</strong> 50,000+ courses (login with company email)</li>
+        <li><strong>Coursera:</strong> Access to university-level programs and certifications</li>
+        <li><strong>Pluralsight:</strong> Technology and IT skill development</li>
+        <li><strong>MasterClass:</strong> Learn from industry experts</li>
+      </ul>
+
+      <h3>2. Certification Programs</h3>
+      <ul>
+        <li>Cloud Certifications: AWS, Azure, GCP (fully funded)</li>
+        <li>Security Certifications: CISSP, CEH, Security+ (fully funded)</li>
+        <li>Project Management: PMP, Agile/Scrum (fully funded)</li>
+        <li>Professional Designations: MBA, MPA programs (tuition reimbursement up to $15,000/year)</li>
+      </ul>
+
+      <h3>3. Internal Training Programs</h3>
+      <ul>
+        <li><strong>New Hire Onboarding:</strong> 2-week comprehensive program</li>
+        <li><strong>Leadership Development:</strong> Quarterly workshops for managers</li>
+        <li><strong>Technical Deep Dives:</strong> Monthly presentations by senior engineers</li>
+        <li><strong>Soft Skills Training:</strong> Communication, negotiation, time management</li>
+      </ul>
+
+      <h3>4. Mentorship Program</h3>
+      <p>Pair with senior colleagues to accelerate your learning. Mentorships typically run 6-12 months with monthly scheduled meetings.</p>
+
+      <h3>5. Conference Attendance</h3>
+      <p>Attend industry conferences relevant to your role. Company covers registration, travel, and hotel (3-4 conferences per year).</p>
+
+      <h3>6. Annual Budget: $2,000 per Employee</h3>
+      <ul>
+        <li>Request training at least 30 days in advance</li>
+        <li>Budget resets January 1 each year</li>
+        <li>Approval required from your manager</li>
+      </ul>
+
+      <p style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #667eea; color: #888; font-size: 12px;">📧 Questions? Email learning@nexora.com | Portal: learning.nexora.com | Updated: January 2026</p>
+    `
+  },
+  conduct: {
+    title: "⚖️ Code of Conduct",
+    content: `
+      <h3>Professional Standards & Ethical Behavior</h3>
+      <p>Nexora Systems maintains high standards of professional conduct. All employees are expected to uphold these values in all workplace interactions.</p>
+
+      <h3>1. Core Values</h3>
+      <ul>
+        <li><strong>Integrity:</strong> Honesty and transparency in all dealings</li>
+        <li><strong>Excellence:</strong> Commitment to quality and continuous improvement</li>
+        <li><strong>Respect:</strong> Valuing diversity and treating others with dignity</li>
+        <li><strong>Innovation:</strong> Embracing creative solutions and new ideas</li>
+        <li><strong>Accountability:</strong> Taking responsibility for our actions</li>
+      </ul>
+
+      <h3>2. Workplace Respect & Dignity</h3>
+      <ul>
+        <li>Treat all colleagues with respect regardless of role, background, or position</li>
+        <li>No discrimination based on race, color, religion, gender, age, or disability</li>
+        <li>Foster an inclusive environment where all voices are heard</li>
+        <li>Address conflicts professionally and respectfully</li>
+      </ul>
+
+      <h3>3. Harassment & Bullying Policy</h3>
+      <p><strong>Zero Tolerance:</strong> Nexora Systems does not tolerate any form of harassment or bullying. This includes:</p>
+      <ul>
+        <li>Sexual harassment or inappropriate comments</li>
+        <li>Discrimination based on protected characteristics</li>
+        <li>Intimidating or threatening behavior</li>
+        <li>Cyberbullying or negative social media posts</li>
+      </ul>
+
+      <h3>4. Confidentiality & Intellectual Property</h3>
+      <ul>
+        <li>Protect confidential company information</li>
+        <li>Do not share trade secrets or client data</li>
+        <li>All work product belongs to Nexora Systems</li>
+        <li>IP created at work is company property</li>
+      </ul>
+
+      <h3>5. Reporting Violations</h3>
+      <p>Report violations to:</p>
+      <ul>
+        <li>Your Direct Manager</li>
+        <li>Human Resources (HR@nexora.com)</li>
+        <li>Anonymous Hotline: 1-800-NEXORA-ETHICS</li>
+      </ul>
+
+      <p style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #667eea; color: #888; font-size: 12px;">✍️ Acknowledgment Required Upon Hire | Annual Review Required | Updated: January 2026</p>
+    `
+  },
+  emergency: {
+    title: "🚨 Emergency Procedures & Safety",
+    content: `
+      <h3>Workplace Safety & Emergency Preparedness</h3>
+      <p>The safety and well-being of our employees is paramount. All employees must be familiar with emergency procedures and safety guidelines.</p>
+
+      <h3>1. Emergency Contacts</h3>
+      <ul>
+        <li><strong>Emergency Services:</strong> Call 911 for fire, medical, or police emergencies</li>
+        <li><strong>Security Team:</strong> Ext. 5555 or Security@nexora.com</li>
+        <li><strong>HR/Incident Response:</strong> HR@nexora.com or 555-0100</li>
+        <li><strong>Hazmat Team:</strong> Available 24/7 for chemical exposure</li>
+      </ul>
+
+      <h3>2. Fire Safety</h3>
+      <ul>
+        <li>All employees must know fire extinguisher locations</li>
+        <li>Fire drills occur quarterly</li>
+        <li>In case of fire: Activate alarm → Evacuate → Meet at assembly point</li>
+        <li>Do NOT use elevators during fire emergency</li>
+      </ul>
+
+      <h3>3. Evacuation Procedures</h3>
+      <ul>
+        <li>Pay attention to evacuation announcements</li>
+        <li>Exit via nearest stairwell (NOT elevators)</li>
+        <li>Help others if you can do so safely</li>
+        <li>Proceed to designated assembly point</li>
+        <li>Do NOT return without all-clear</li>
+      </ul>
+
+      <h3>4. Medical Emergencies</h3>
+      <ul>
+        <li><strong>Call 911</strong> immediately for serious incidents</li>
+        <li>First aid kits available on each floor</li>
+        <li>AED locations: Lobbies, break rooms, gym</li>
+        <li>Report all work-related injuries immediately to HR</li>
+      </ul>
+
+      <h3>5. Workplace Hazards</h3>
+      <ul>
+        <li>Report spills/hazards immediately to Facilities</li>
+        <li>Never clean up hazardous materials yourself</li>
+        <li>Chemical safety data (SDS) in each work area</li>
+        <li>Ergonomic assessments available for desk workers</li>
+      </ul>
+
+      <h3>6. Weather & Natural Disasters</h3>
+      <ul>
+        <li><strong>Tornado:</strong> Move to interior rooms away from windows</li>
+        <li><strong>Earthquake:</strong> Drop, cover, and hold on under desks</li>
+        <li><strong>Flooding:</strong> Move to higher floors</li>
+        <li><strong>Winter Weather:</strong> Remote work authorized</li>
+      </ul>
+
+      <p style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #667eea; color: #888; font-size: 12px;">🔥 Drills: Quarterly | Standards: OSHA | Updated: February 2026</p>
+    `
+  }
+};
+
+function openDocument(docKey) {
+  const modal = document.getElementById("documentModal");
+  const docTitle = document.getElementById("docTitle");
+  const docContent = document.getElementById("docContent");
+
+  const doc = documents[docKey];
+  if (doc) {
+    docTitle.textContent = doc.title;
+    docContent.innerHTML = doc.content;
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeDocument() {
+  const modal = document.getElementById("documentModal");
+  modal.style.display = "none";
+  document.body.style.overflow = "auto";
+}
+
+window.onclick = function(event) {
+  const modal = document.getElementById("documentModal");
+  if (event.target == modal) {
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+  }
+}
+</script>
+
+</body>
+
+</html>

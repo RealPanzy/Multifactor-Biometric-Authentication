@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ document.title }}</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div style="max-width: 900px; margin: auto; padding: 20px;">
+    <h2>{{ document.title }}</h2>
+    <p>Owner: {{ document.owner_username }}</p>
+    <p>Visibility: {% if document.is_public %}Public{% else %}Restricted{% endif %}</p>
+    <div style="border:1px solid #ddd; padding: 15px; border-radius: 8px; background: #fff; margin-top: 10px;">
+      <p>{{ document.content }}</p>
+    </div>
+    <div style="margin-top: 20px;"><a href="/documents">Back to documents</a></div>
+  </div>
+</body>
+</html>

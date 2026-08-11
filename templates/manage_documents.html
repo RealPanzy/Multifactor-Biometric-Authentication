@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manage Document Permissions</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div style="max-width: 1000px; margin: auto; padding: 20px;">
+    <h2>Phase: Document Permission Management</h2>
+    <p>Grant or revoke user access to restricted documents.</p>
+    <a href="/documents">Back to documents list</a> | <a href="/portal">Portal</a>
+
+    <h3>Documents</h3>
+    <table border="1" cellpadding="6" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr><th>ID</th><th>Title</th><th>Type</th><th>Access</th></tr>
+      </thead>
+      <tbody>
+      {% for document in documents %}
+        <tr>
+          <td>{{ document.id }}</td>
+          <td>{{ document.title }}</td>
+          <td>{% if document.is_public %}Public{% else %}Restricted{% endif %}</td>
+          <td>
+            {% for user in users %}
+              {% set perm = document.permissions|selectattr('user_id','equalto', user.id)|first %}
+              <div style="margin-bottom:5px;">
+                {{ user.username }}: 
+                {% if perm %}
+                  <a href="/revoke_permission/{{ document.id }}/{{ user.id }}">Revoke</a>
+                {% else %}
+                  <a href="/grant_permission/{{ document.id }}/{{ user.id }}">Grant</a>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
